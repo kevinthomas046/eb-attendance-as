@@ -13,6 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export function hello() {
-  return 'Hello Apps Script!';
+// types.ts
+export interface FamilyRecord {
+  FamilyId: string;
+  FamilyName: string;
+}
+
+export interface RecentAttendance {
+  AttendanceId: string;
+  ClassDate: string;
+  StudentName: string;
+  ClassGroupName: string;
+  Price: string;
+}
+
+export interface StudentRecord {
+  StudentId: string;
+  StudentName: string;
+}
+
+export interface AttendanceRecord {
+  AttendanceId: string;
+  ClassId: string;
+  StudentName: string | undefined;
+  Price: string;
 }
