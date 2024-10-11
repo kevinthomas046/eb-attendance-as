@@ -34,7 +34,7 @@ function doGet() {
   Logger.log('Loading page');
   return HtmlService.createTemplateFromFile('page')
     .evaluate()
-    .setTitle('Student Portal | Elevation Beats Inc');
+    .setTitle('Attendance | Elevation Beats Inc');
 }
 
 /**
