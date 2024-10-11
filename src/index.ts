@@ -25,6 +25,15 @@ import {
 const SPREADSHEET_ID: string =
   PropertiesService.getScriptProperties().getProperty('SHEET_ID') || '';
 
+const SHEETS = {
+  FAMILIES: 'Families',
+  STUDENTS: 'Students',
+  ATTENDANCE: 'Attendance',
+  PAYMENTS: 'Payments',
+  CLASSES: 'Classes',
+  CLASS_GROUPS: 'ClassGroups',
+};
+
 /**
  * Special function that handles HTTP GET requests to the published web app.
  * @return {GoogleAppsScript.HTML.HtmlOutput} The HTML page to be served.
@@ -72,16 +81,25 @@ function getSheetByName(sheetName: string): GoogleAppsScript.Spreadsheet.Sheet {
 }
 
 function getClasses() {
-  return [
-    { id: 1, displayName: 'Advanced' },
-    { id: 2, displayName: 'Intermediate' },
-    { id: 3, displayName: 'Beginner' },
-    { id: 4, displayName: 'Expert' },
-    { id: 5, displayName: 'Novice' },
-    { id: 6, displayName: 'Proficient' },
-    { id: 7, displayName: 'Skilled' },
-    { id: 8, displayName: 'Master' },
-    { id: 9, displayName: 'Specialist' },
-    { id: 10, displayName: 'Guru' },
-  ];
+  const classesSheet = getSheetByName(SHEETS.CLASSES);
+  const classData = classesSheet.getDataRange().getValues();
+
+  const classes = classData.slice(1).reduce((danceClasses, danceClass) => {
+    const [id, , date, price, classGroup] = danceClass;
+    if (classGroup && date) {
+      const displayDate = new Date(date).toLocaleDateString();
+      danceClasses.push({
+        id,
+        date: displayDate,
+        price,
+        classGroup,
+        displayName: `${displayDate} - ${classGroup}`,
+      });
+    }
+    return danceClasses;
+  }, []);
+
+  console.log(classes);
+
+  return classes;
 }

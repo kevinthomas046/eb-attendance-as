@@ -38,3 +38,10 @@ export interface AttendanceRecord {
   StudentName: string | undefined;
   Price: string;
 }
+
+export interface ClassRecord {
+  id: string;
+  date: string;
+  price: number;
+  classGroup: string;
+}
