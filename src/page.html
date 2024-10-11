@@ -23,7 +23,20 @@ limitations under the License.
   </head>
   <body>
     <main>
-      <div class="loader"></div>
+      <div id="app">
+        <section class="class-selector spacer-30">
+          <span v-if="isClassesLoading" class="loader"></span>
+          <div class="custom-select" v-else>
+              <select v-model="selectedClass">
+                <option disabled value="">Please select one</option>
+                <option v-for="danceClass in classes" :key="danceClass.id">
+                  {{ danceClass.displayName }}
+                </option>
+              </select>
+          </div>
+        </section>
+        <section class="attendance-container"></section>
+      </div>
     </main>
     <?!= include('javascript'); ?>
   </body>

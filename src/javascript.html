@@ -13,6 +13,41 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-<script>
-    console.log('Loaded');
+<script type="importmap">
+  {
+    "imports": {
+      "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+    }
+  }
+</script>
+
+<script type="module">
+  import { createApp } from 'vue';
+
+  createApp({
+    data() {
+      return {
+        selectedClass: '',
+        classes: [],
+        isClassesLoading: false
+      };
+    },
+    created() {
+      // fetch on init
+      this.getClasses();
+    },
+    methods: {
+      getClasses() {
+        this.isClassesLoading = true;
+        google.script.run
+          .withSuccessHandler(classes => {
+            this.classes = classes;
+            this.isClassesLoading = false;
+          })
+          .getClasses();
+      },
+      getAttendanceForClass() {},
+      submitAttendance() {},
+    },
+  }).mount('#app');
 </script>

@@ -70,3 +70,18 @@ function getSheetByName(sheetName: string): GoogleAppsScript.Spreadsheet.Sheet {
   }
   return sheet;
 }
+
+function getClasses() {
+  return [
+    { id: 1, displayName: 'Advanced' },
+    { id: 2, displayName: 'Intermediate' },
+    { id: 3, displayName: 'Beginner' },
+    { id: 4, displayName: 'Expert' },
+    { id: 5, displayName: 'Novice' },
+    { id: 6, displayName: 'Proficient' },
+    { id: 7, displayName: 'Skilled' },
+    { id: 8, displayName: 'Master' },
+    { id: 9, displayName: 'Specialist' },
+    { id: 10, displayName: 'Guru' },
+  ];
+}
