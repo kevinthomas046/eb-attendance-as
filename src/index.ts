@@ -82,9 +82,9 @@ function getSheetByName(sheetName: string): GoogleAppsScript.Spreadsheet.Sheet {
 
 function getClasses() {
   const classesSheet = getSheetByName(SHEETS.CLASSES);
-  const classData = classesSheet.getDataRange().getValues();
+  const classesData = classesSheet.getDataRange().getValues();
 
-  const classes = classData.slice(1).reduce((danceClasses, danceClass) => {
+  const classes = classesData.slice(1).reduce((danceClasses, danceClass) => {
     const [id, , date, price, classGroup] = danceClass;
     if (classGroup && date) {
       const displayDate = new Date(date).toLocaleDateString();
@@ -102,4 +102,50 @@ function getClasses() {
   console.log(classes);
 
   return classes;
+}
+
+function getAttendanceForClass(classLookupId: number) {
+  const attendanceSheet = getSheetByName(SHEETS.ATTENDANCE);
+  const attendanceData = attendanceSheet.getDataRange().getValues();
+  const studentsSheet = getSheetByName(SHEETS.STUDENTS);
+  const studentsData = studentsSheet.getDataRange().getValues();
+  const classesSheet = getSheetByName(SHEETS.CLASSES);
+  const classesData = classesSheet.getDataRange().getValues();
+
+  const studentsPresent = attendanceData
+    .slice(1)
+    .filter(([, , classId]) => classLookupId === classId)
+    .map(([, studentId]) => studentId);
+  const [classGroupId] =
+    classesData.slice(1).find(([classId]) => classId === classLookupId) || [];
+  const allStudents = studentsData
+    .slice(1)
+    .reduce((students, student) => {
+      const [id, name, , studentClassGroupId] = student;
+
+      if (studentClassGroupId === classGroupId) {
+        students.push({
+          id,
+          name,
+          isPresent: studentsPresent.includes(id),
+        });
+      }
+
+      return students;
+    }, [])
+    .sort((a, b) => {
+      const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+      const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+
+      // names must be equal
+      return 0;
+    });
+
+  return allStudents;
 }
