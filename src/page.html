@@ -27,9 +27,9 @@ limitations under the License.
         <section class="class-selector spacer-30">
           <span v-if="isClassesLoading" class="loader"></span>
           <div class="custom-select" v-else>
-              <select v-model="selectedClass">
+              <select v-model="selectedClass" @change="getAttendanceForClass()">
                 <option disabled value="">Please select one</option>
-                <option v-for="danceClass in classes" :key="danceClass.id">
+                <option v-for="danceClass in classes" :key="danceClass.id" :value="danceClass.id">
                   {{ danceClass.displayName }}
                 </option>
               </select>
