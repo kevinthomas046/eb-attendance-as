@@ -29,7 +29,11 @@ limitations under the License.
       return {
         selectedClass: '',
         classes: [],
-        isClassesLoading: false
+        isClassesLoading: false,
+        isAttendanceLoading: false,
+        currentClass: [],
+        presentStudents: [],
+        isAttendanceSubmitting: false
       };
     },
     created() {
@@ -48,8 +52,23 @@ limitations under the License.
       },
       getAttendanceForClass() {
         console.log(this.selectedClass);
+        this.isAttendanceLoading = true;
+        google.script.run
+          .withSuccessHandler(currentClass => {
+            this.currentClass = currentClass;
+            this.presentStudents = currentClass
+              .filter(student => student.isPresent)
+              .map(student => student.id);
+            this.isAttendanceLoading = false;
+          })
+          .getAttendanceForClass(this.selectedClass);
       },
-      submitAttendance() {},
+      submitAttendance() {
+        this.isAttendanceSubmitting = true;
+        setTimeout(() => {
+          this.isAttendanceSubmitting = false;
+        }, 3000);
+      },
     },
   }).mount('#app');
 </script>
