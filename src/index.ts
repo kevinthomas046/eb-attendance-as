@@ -116,7 +116,7 @@ function getAttendanceForClass(classLookupId: number) {
     .slice(1)
     .filter(([, , classId]) => classLookupId === classId)
     .map(([, studentId]) => studentId);
-  const [classGroupId] =
+  const [, classGroupId] =
     classesData.slice(1).find(([classId]) => classId === classLookupId) || [];
   const allStudents = studentsData
     .slice(1)
@@ -148,4 +148,26 @@ function getAttendanceForClass(classLookupId: number) {
     });
 
   return allStudents;
+}
+
+function submitAttendanceForClass(
+  classLookupId: number,
+  presentStudents: number[]
+) {
+  const attendanceSheet = getSheetByName(SHEETS.ATTENDANCE);
+  const attendanceData = attendanceSheet.getDataRange().getValues();
+  const lastRow = attendanceSheet.getLastRow();
+  const studentValues = attendanceSheet.getRange(`B1:B${lastRow}`).getValues();
+  const lastStudentRow =
+    lastRow -
+    studentValues.reverse().findIndex(([studentId]) => studentId !== '');
+
+  console.log(lastStudentRow);
+
+  presentStudents.forEach((studentId, index) => {
+    const newRow = lastStudentRow + index + 1;
+    attendanceSheet
+      .getRange(`B${newRow}:C${newRow}`)
+      .setValues([[studentId, classLookupId]]);
+  });
 }

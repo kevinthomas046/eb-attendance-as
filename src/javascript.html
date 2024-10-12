@@ -56,10 +56,7 @@ limitations under the License.
           </label>
         </div>
       </div>
-      <button
-        @click="submitAttendance"
-        :disabled="isAttendanceSubmitting"
-      >
+      <button @click="submitAttendance" :disabled="isAttendanceSubmitting">
         {{ isAttendanceSubmitting ? 'Submitting' : 'Submit Attendance' }}
       </button>
     </div>
@@ -78,7 +75,7 @@ limitations under the License.
         isAttendanceLoading: false,
         currentClass: [],
         presentStudents: [],
-        isAttendanceSubmitting: false
+        isAttendanceSubmitting: false,
       };
     },
     created() {
@@ -109,12 +106,16 @@ limitations under the License.
           .getAttendanceForClass(this.selectedClass);
       },
       submitAttendance() {
-        this.isAttendanceSubmitting = true;
-        setTimeout(() => {
-          this.isAttendanceSubmitting = false;
-        }, 3000);
+        if (this.presentStudents.length) {
+          this.isAttendanceSubmitting = true;
+          google.script.run
+            .withSuccessHandler(() => {
+              this.isAttendanceSubmitting = false;
+            })
+            .submitAttendanceForClass(this.selectedClass, this.presentStudents);
+        }
       },
     },
-    template: document.getElementById('attendance-app-template').innerHTML
+    template: document.getElementById('attendance-app-template').innerHTML,
   }).mount('#app');
 </script>
