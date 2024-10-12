@@ -21,6 +21,51 @@ limitations under the License.
   }
 </script>
 
+<template id="attendance-app-template">
+  <section class="class-selector spacer-30">
+    <span v-if="isClassesLoading" class="loader"></span>
+    <div class="custom-select" v-else>
+      <select v-model="selectedClass" @change="getAttendanceForClass()">
+        <option disabled value="">Please select one</option>
+        <option
+          v-for="danceClass in classes"
+          :key="danceClass.id"
+          :value="danceClass.id"
+        >
+          {{ danceClass.displayName }}
+        </option>
+      </select>
+    </div>
+  </section>
+  <section class="attendance-container" v-if="selectedClass">
+    <span v-if="isAttendanceLoading" class="loader"></span>
+    <div v-else class="attendance-class-form">
+      <div class="student-list-container spacer-30">
+        <div
+          class="student-container"
+          v-for="student in currentClass"
+          :key="student.id"
+        >
+          <label>
+            <input
+              type="checkbox"
+              :value="student.id"
+              v-model="presentStudents"
+            />
+            {{ student.name }}
+          </label>
+        </div>
+      </div>
+      <button
+        @click="submitAttendance"
+        :disabled="isAttendanceSubmitting"
+      >
+        {{ isAttendanceSubmitting ? 'Submitting' : 'Submit Attendance' }}
+      </button>
+    </div>
+  </section>
+</template>
+
 <script type="module">
   import { createApp } from 'vue';
 
@@ -70,5 +115,6 @@ limitations under the License.
         }, 3000);
       },
     },
+    template: document.getElementById('attendance-app-template').innerHTML
   }).mount('#app');
 </script>
