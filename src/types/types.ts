@@ -44,4 +44,5 @@ export interface ClassRecord {
   date: string;
   price: number;
   classGroup: string;
+  displayName: string;
 }

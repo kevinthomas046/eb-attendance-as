@@ -27,13 +27,24 @@ limitations under the License.
     <div class="custom-select" v-else>
       <select v-model="selectedClass" @change="getAttendanceForClass()">
         <option disabled value="">Please select one</option>
-        <option
-          v-for="danceClass in classes"
-          :key="danceClass.id"
-          :value="danceClass.id"
-        >
-          {{ danceClass.displayName }}
-        </option>
+        <optgroup label="Upcoming Classes">
+          <option
+            v-for="danceClass in classes.upcomingClasses"
+            :key="danceClass.id"
+            :value="danceClass.id"
+          >
+            {{ danceClass.displayName }}
+          </option>
+        </optgroup>
+        <optgroup label="Prior Classes">
+          <option
+            v-for="danceClass in classes.priorClasses"
+            :key="danceClass.id"
+            :value="danceClass.id"
+          >
+            {{ danceClass.displayName }}
+          </option>
+        </optgroup>
       </select>
     </div>
   </section>

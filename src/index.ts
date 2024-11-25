@@ -20,6 +20,7 @@ import {
   RecentAttendance,
   StudentRecord,
   AttendanceRecord,
+  ClassRecord,
 } from './types/types';
 
 const SPREADSHEET_ID: string =
@@ -84,20 +85,40 @@ function getClasses() {
   const classesSheet = getSheetByName(SHEETS.CLASSES);
   const classesData = classesSheet.getDataRange().getValues();
 
-  const classes = classesData.slice(1).reduce((danceClasses, danceClass) => {
-    const [id, , date, price, classGroup] = danceClass;
-    if (classGroup && date) {
-      const displayDate = new Date(date).toLocaleDateString();
-      danceClasses.push({
-        id,
-        date: displayDate,
-        price,
-        classGroup,
-        displayName: `${displayDate} - ${classGroup}`,
-      });
+  const classes = classesData.slice(1).reduce(
+    (danceClasses, danceClass) => {
+      const [id, , date, price, classGroup] = danceClass;
+      if (classGroup && date) {
+        const displayDate = new Date(date).toLocaleDateString();
+        const today = new Date();
+        const priorOrUpcoming =
+          new Date(date) >= today ? 'upcomingClasses' : 'priorClasses';
+
+        danceClasses[priorOrUpcoming].push({
+          id,
+          date: displayDate,
+          price,
+          classGroup,
+          displayName: `${displayDate} - ${classGroup}`,
+        });
+
+        danceClasses[priorOrUpcoming].sort((a, b) => {
+          const dateA = new Date(a.date).getTime();
+          const dateB = new Date(b.date).getTime();
+          if (priorOrUpcoming === 'upcomingClasses') {
+            return dateA > dateB ? 1 : -1;
+          } else {
+            return dateA < dateB ? 1 : -1;
+          }
+        });
+      }
+      return danceClasses;
+    },
+    {
+      upcomingClasses: [] as ClassRecord[],
+      priorClasses: [] as ClassRecord[],
     }
-    return danceClasses;
-  }, []);
+  );
 
   console.log(classes);
 
@@ -121,9 +142,14 @@ function getAttendanceForClass(classLookupId: number) {
   const allStudents = studentsData
     .slice(1)
     .reduce((students, student) => {
-      const [id, name, , studentClassGroupId] = student;
+      const [id, name, , studentClassGroupId, isActive] = student;
 
-      if (studentClassGroupId === classGroupId) {
+      const isStudentPresent = studentsPresent.includes(id);
+
+      if (
+        studentClassGroupId === classGroupId &&
+        (isStudentPresent || isActive)
+      ) {
         students.push({
           id,
           name,
