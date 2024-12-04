@@ -134,6 +134,7 @@ function getAttendanceForClass(classLookupId: number) {
     .slice(1)
     .filter(([, , classId]) => classLookupId === classId)
     .map(([, studentId]) => studentId);
+
   const [, classGroupId] =
     classesData.slice(1).find(([classId]) => classId === classLookupId) || [];
   const allStudents = studentsData
@@ -173,12 +174,30 @@ function getAttendanceForClass(classLookupId: number) {
   return allStudents;
 }
 
+/**
+ * Deletes all current attendance for classLookupId and inserts all students
+ * @param classLookupId Class ID
+ * @param presentStudents List of student IDs to be marked as present
+ */
 function submitAttendanceForClass(
   classLookupId: number,
   presentStudents: number[]
 ) {
   const attendanceSheet = getSheetByName(SHEETS.ATTENDANCE);
   const attendanceData = attendanceSheet.getDataRange().getValues();
+  attendanceData
+    .slice(1)
+    .reverse()
+    .forEach(([, studentId, classId], index) => {
+      if (classId === classLookupId) {
+        const rowNumber = attendanceData.length - index;
+        console.log(
+          `Deleting student ${studentId} from class ${classId}, row ${rowNumber}`
+        );
+        attendanceSheet.deleteRow(rowNumber);
+      }
+    });
+
   const lastRow = attendanceSheet.getLastRow();
   const studentValues = attendanceSheet.getRange(`B1:B${lastRow}`).getValues();
   const lastStudentRow =
