@@ -86,9 +86,10 @@ function getClasses() {
       const [id, , date, price, classGroup] = danceClass;
       if (classGroup && date) {
         const displayDate = new Date(date).toLocaleDateString();
-        const today = new Date();
+        const today = Date.parse(new Date().toLocaleDateString());
+        const classDate = Date.parse(displayDate);
         const priorOrUpcoming =
-          new Date(date) >= today ? 'upcomingClasses' : 'priorClasses';
+          classDate >= today ? 'upcomingClasses' : 'priorClasses';
 
         danceClasses[priorOrUpcoming].push({
           id,
