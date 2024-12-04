@@ -23,9 +23,6 @@ import {
   ClassRecord,
 } from './types/types';
 
-const SPREADSHEET_ID: string =
-  PropertiesService.getScriptProperties().getProperty('SHEET_ID') || '';
-
 const SHEETS = {
   FAMILIES: 'Families',
   STUDENTS: 'Students',
@@ -73,8 +70,7 @@ function include(filename: string) {
  * @returns {GoogleAppsScript.Spreadsheet.Sheet} Google sheet reference
  */
 function getSheetByName(sheetName: string): GoogleAppsScript.Spreadsheet.Sheet {
-  const sheet =
-    SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(sheetName);
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
   if (!sheet) {
     throw new Error(`Sheet with name ${sheetName} not found.`);
   }
