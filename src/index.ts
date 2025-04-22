@@ -140,20 +140,12 @@ function getAttendanceForClass(classLookupId: number) {
   const allStudents = studentsData
     .slice(1)
     .reduce((students, student) => {
-      const [
-        id,
-        name,
-        ,
-        studentClassGroupId,
-        studentRecitalClassGroupId,
-        isActive,
-      ] = student;
+      const [id, name, , studentClassGroupId, isActive] = student;
 
       const isStudentPresent = studentsPresent.includes(id);
 
       if (
-        (studentClassGroupId === classGroupId ||
-          studentRecitalClassGroupId === classGroupId) &&
+        studentClassGroupId === classGroupId &&
         (isStudentPresent || isActive)
       ) {
         students.push({
