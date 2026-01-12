@@ -83,7 +83,7 @@ function getClasses() {
 
   const classes = classesData.slice(1).reduce(
     (danceClasses, danceClass) => {
-      const [id, , date, price, classGroup] = danceClass;
+      const [id, , date, price, , classGroup] = danceClass;
       if (classGroup && date) {
         const displayDate = new Date(date).toLocaleDateString();
         const today = Date.parse(new Date().toLocaleDateString());
